@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:formvalidation/src/bloc/provider.dart';
 import 'package:formvalidation/src/providers/usuario_provider.dart';
+import 'package:formvalidation/src/utils/utils.dart';
 
 class LoginPage extends StatelessWidget {
   final usuarioProvider = UsuarioProvider();
@@ -179,13 +180,19 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  _login ( LoginBloc bloc, BuildContext context ){
+  _login ( LoginBloc bloc, BuildContext context ) async {
     print('==================');
     print('Email: ${ bloc.email }');
     print('Password: ${ bloc.password }');
     print('==================');
 
-    usuarioProvider.login(bloc.email, bloc.password);
+    Map info = await usuarioProvider.login(bloc.email, bloc.password);
+
+    if ( info['ok'] ){
+      Navigator.pushReplacementNamed(context, 'home');
+    } else {
+      mostrarAlerta( context, info['token'] );
+    }
 
     //Navigator.pushReplacementNamed(context, 'home');
   }
